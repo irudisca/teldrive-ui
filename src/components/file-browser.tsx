@@ -35,6 +35,7 @@ import { FileOperationModal } from "./modals/file-operation";
 import PreviewModal from "./modals/preview";
 import { Upload } from "./upload";
 import { UploadDropzone } from "./upload/drop-zone";
+import { VideoHoverPreview } from "./video-hover-preview";
 import type { BrowseView, FileListParams } from "@/types";
 
 let firstRender = true;
@@ -61,6 +62,8 @@ export const DriveFileBrowser = memo(() => {
   const search = fileRoute.useSearch();
 
   const listRef = useRef<VirtuosoHandle | VirtuosoGridHandle>(null);
+
+  const browserRef = useRef<HTMLDivElement>(null);
 
   const [session] = useSession();
 
@@ -124,7 +127,7 @@ export const DriveFileBrowser = memo(() => {
   }, [search?.path, view]);
 
   return (
-    <div className="size-full m-auto relative">
+    <div className="size-full m-auto relative" ref={browserRef}>
       <UploadDropzone isDisabled={view !== "my-drive"}>
         <FileBrowser
           files={files}
@@ -155,6 +158,8 @@ export const DriveFileBrowser = memo(() => {
           <FileContextMenu />
         </FileBrowser>
       </UploadDropzone>
+
+      <VideoHoverPreview containerRef={browserRef} files={files} sessionHash={session?.hash} />
 
       {modalFileActions.find((val) => val === modalOperation) && modalOpen && (
         <FileOperationModal queryKey={queryOptions.queryKey} />
