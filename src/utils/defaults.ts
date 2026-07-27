@@ -32,6 +32,7 @@ export const sortIdsMap = {
   sort_files_by_name: "name",
   sort_files_by_date: "updatedAt",
   sort_files_by_size: "size",
+  sort_files_by_added: "createdAt",
 } as const;
 
 export const BREAKPOINTS = { xs: 0, sm: 476, md: 576, lg: 992 };

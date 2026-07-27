@@ -1164,7 +1164,7 @@ export interface components {
         /** @description Show shared files */
         "FileQuery.shared": boolean;
         /** @description Sort field */
-        "FileQuery.sort": "name" | "updatedAt" | "size" | "id";
+        "FileQuery.sort": "name" | "updatedAt" | "size" | "id" | "createdAt";
         /** @description File Status */
         "FileQuery.status": "active" | "pending_deletion";
         /** @description File type */

@@ -91,6 +91,18 @@ export const CustomActions = {
       group: "Add",
     },
   } as const),
+
+  SortFilesByAdded: defineFileAction({
+    id: "sort_files_by_added",
+    sortKeySelector: (file) => (file ? file.createdAt : undefined),
+    button: {
+      name: "Sort by added",
+      toolbar: true,
+      group: "Sort",
+      ascIcon: FbIconName.sortDateAsc,
+      descIcon: FbIconName.sortDateDesc,
+    },
+  } as const),
 };
 
 type FbActionFullUnion =
@@ -289,7 +301,8 @@ export const useFileAction = (
         }
         case FbActions.SortFilesByName.id:
         case FbActions.SortFilesBySize.id:
-        case FbActions.SortFilesByDate.id: {
+        case FbActions.SortFilesByDate.id:
+        case CustomActions.SortFilesByAdded.id: {
           if (view === "my-drive") {
             const currentSortState = getSortState();
             const order =
