@@ -2,6 +2,8 @@ import type { Session } from "@/types";
 import { partial } from "filesize";
 import { useSettingsStore } from "./stores/settings";
 
+export const THUMB_VERSION = "2";
+
 export const navigateToExternalUrl = (url: string, shouldOpenNewTab = true) => {
   if (shouldOpenNewTab) {
     window.open(url, "_blank");

@@ -13,7 +13,7 @@ import DocPreview from "@/components/previews/doc-preview";
 import ImagePreview from "@/components/previews/image-preview";
 import PDFPreview from "@/components/previews/pdf-preview";
 import { WideScreen } from "@/components/previews/wide-screen";
-import { mediaUrl, sharedMediaUrl } from "@/utils/common";
+import { mediaUrl, sharedMediaUrl, THUMB_VERSION } from "@/utils/common";
 import { defaultSortState } from "@/utils/defaults";
 import { preview } from "@/utils/preview-type";
 import { useModalStore } from "@/utils/stores";
@@ -193,6 +193,7 @@ export default memo(function PreviewModal({
           const u = new URL(window.location.origin);
           u.pathname = `/api/files/${id}/thumbnail`;
           u.searchParams.set("hash", session.hash);
+          u.searchParams.set("v", THUMB_VERSION);
           return u.toString();
         })();
 
@@ -203,6 +204,7 @@ export default memo(function PreviewModal({
           const u = new URL(window.location.origin);
           u.pathname = `/api/files/${id}/storyboard`;
           u.searchParams.set("hash", session.hash);
+          u.searchParams.set("v", THUMB_VERSION);
           return u.toString();
         })();
 

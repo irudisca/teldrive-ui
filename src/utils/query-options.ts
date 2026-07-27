@@ -2,7 +2,7 @@ import type { FileListParams, ShareListParams } from "@/types";
 import { infiniteQueryOptions, queryOptions, useQuery } from "@tanstack/react-query";
 import type { FileData } from "@tw-material/file-browser";
 
-import { getExtension, mediaUrl } from "./common";
+import { getExtension, mediaUrl, THUMB_VERSION } from "./common";
 import { defaultSortState, sortIdsMap, sortViewMap } from "./defaults";
 import { getPreviewType, preview } from "./preview-type";
 import { fetchClient } from "./api";
@@ -150,6 +150,7 @@ const mapFilesToFb = (files: components["schemas"]["FileList"]["items"], session
       const u = new URL(window.location.origin);
       u.pathname = `/api/files/${item.id!}/thumbnail`;
       u.searchParams.set("hash", sessionHash);
+      u.searchParams.set("v", THUMB_VERSION);
       thumbnailUrl = u.toString();
     }
     return {
