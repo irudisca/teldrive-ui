@@ -148,7 +148,7 @@ const mapFilesToFb = (files: components["schemas"]["FileList"]["items"], session
       }
     } else if (previewType === "video") {
       const u = new URL(window.location.origin);
-      u.pathname = `/api/files/${item.id}/thumbnail`;
+      u.pathname = `/api/files/${item.id!}/thumbnail`;
       u.searchParams.set("hash", sessionHash);
       thumbnailUrl = u.toString();
     }

@@ -403,4 +403,7 @@ export const fileActions = [
 
 export const sharefileActions = Object.keys(CustomActions)
   .map((t) => CustomActions[t as keyof typeof CustomActions])
-  .filter((action) => action.id !== CustomActions.ShareFiles.id);
+  .filter(
+    (action) =>
+      action.id !== CustomActions.ShareFiles.id && action.id !== CustomActions.FileInfo.id,
+  );

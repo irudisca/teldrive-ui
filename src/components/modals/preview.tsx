@@ -186,6 +186,16 @@ export default memo(function PreviewModal({
     ? sharedMediaUrl(shareId, id, name)
     : mediaUrl(id, name, view === "my-drive" ? path || "/" : fileData?.path!, session?.hash!);
 
+  const posterUrl: string | undefined =
+    shareId || !session?.hash
+      ? undefined
+      : (() => {
+          const u = new URL(window.location.origin);
+          u.pathname = `/api/files/${id}/thumbnail`;
+          u.searchParams.set("hash", session.hash);
+          return u.toString();
+        })();
+
   const renderPreview = useCallback(() => {
     if (previewType) {
       switch (previewType) {
@@ -193,7 +203,7 @@ export default memo(function PreviewModal({
           return (
             <Suspense fallback={<Loader />}>
               <div className="w-full max-w-5xl overflow-hidden mx-auto">
-                <VideoPreview id={id} url={assetUrl} />
+                <VideoPreview id={id} url={assetUrl} poster={posterUrl} />
               </div>
             </Suspense>
           );
@@ -241,7 +251,7 @@ export default memo(function PreviewModal({
       }
     }
     return null;
-  }, [assetUrl, name, previewType]);
+  }, [assetUrl, posterUrl, name, previewType]);
 
   return (
     <Modal
