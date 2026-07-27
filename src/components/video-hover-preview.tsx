@@ -5,7 +5,9 @@ import type { FileData } from "@tw-material/file-browser";
 
 import { mediaUrl } from "@/utils/common";
 
-const HOVER_DELAY_MS = 500;
+// Small guard so a cursor sweep across the grid doesn't fire a preview for
+// every tile it passes under.
+const HOVER_DELAY_MS = 100;
 
 // @tw-material/file-browser stamps every rendered file row/tile (grid, list
 // and tile view alike) with these two data attributes - see
@@ -14,6 +16,27 @@ const HOVER_DELAY_MS = 500;
 // regardless of view mode and even before/if the thumbnail image itself has
 // loaded (or failed to load).
 const FILE_ENTRY_SELECTOR = '[data-test-id="file-entry"]';
+
+// Within a tile, the actual thumbnail box (not the whole tile, which also
+// includes the name label above it and the date/size caption below it).
+// Per the package's FileEntry.tsx (see GridEntryPreview/FileThumbnail in
+// node_modules/@tw-material/file-browser/dist/index.mjs): once art has
+// loaded, the box contains a single `<img>` (there's only one <img> in the
+// whole package - icons render as inline SVG via FbIcon); before/if that
+// resolves, it's an empty aspect-ratio'd div (`aspect-[16/10]`) holding a
+// centered fallback icon instead. Grid view is the only mode with a
+// thumbnail box at all - list/tile view only show a small fixed icon - so
+// this deliberately falls through to the full tile rect there.
+const THUMBNAIL_IMG_SELECTOR = "img";
+const THUMBNAIL_BOX_SELECTOR = '[class*="aspect-"]';
+
+function getThumbnailElement(tile: HTMLElement): HTMLElement {
+  return (
+    tile.querySelector<HTMLElement>(THUMBNAIL_IMG_SELECTOR) ??
+    tile.querySelector<HTMLElement>(THUMBNAIL_BOX_SELECTOR) ??
+    tile
+  );
+}
 
 type VideoHoverPreviewProps = {
   containerRef: RefObject<HTMLElement | null>;
@@ -29,11 +52,12 @@ type Rect = {
 };
 
 /**
- * Desktop-only nicety: hovering a video tile in the file grid for ~500ms
- * overlays a small muted player, absolutely positioned over the tile, that
- * streams the video from its midpoint. Mounted alongside <FileBrowser /> and
- * driven by delegated mouse events on its scroll container, since the grid
- * tiles themselves are rendered inside the (unforkable) external package.
+ * Desktop-only nicety: hovering a video tile in the file grid for ~100ms
+ * overlays a small muted player, absolutely positioned over the tile's
+ * thumbnail box, that streams the video from its midpoint. Mounted alongside
+ * <FileBrowser /> and driven by delegated mouse events on its scroll
+ * container, since the grid tiles themselves are rendered inside the
+ * (unforkable) external package.
  */
 export function VideoHoverPreview({ containerRef, files, sessionHash }: VideoHoverPreviewProps) {
   const [rect, setRect] = useState<Rect | null>(null);
@@ -102,7 +126,7 @@ export function VideoHoverPreview({ containerRef, files, sessionHash }: VideoHov
         if (activeTileRef.current !== tile) {
           return;
         }
-        const bounds = tile.getBoundingClientRect();
+        const bounds = getThumbnailElement(tile).getBoundingClientRect();
         setRect({
           top: bounds.top,
           left: bounds.left,
@@ -164,7 +188,7 @@ export function VideoHoverPreview({ containerRef, files, sessionHash }: VideoHov
       muted
       playsInline
       preload="metadata"
-      className="fixed rounded-lg object-cover shadow-lg z-50 pointer-events-none"
+      className="fixed rounded-lg object-contain bg-black shadow-lg z-50 pointer-events-none"
       style={{
         top: rect.top,
         left: rect.left,
