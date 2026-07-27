@@ -6,8 +6,9 @@ import { Player } from "./art-player";
 interface VideoPlayerProps {
   url: string;
   poster?: string;
+  storyboard?: string;
 }
-const VideoPlayer = memo(({ url, poster, ...props }: VideoPlayerProps) => {
+const VideoPlayer = memo(({ url, poster, storyboard, ...props }: VideoPlayerProps) => {
   const artInstance = useRef<Artplayer | null>(null);
   const artOptions: Option = {
     container: "",
@@ -45,6 +46,7 @@ const VideoPlayer = memo(({ url, poster, ...props }: VideoPlayerProps) => {
       ref={artInstance}
       option={artOptions}
       poster={poster}
+      storyboard={storyboard}
       {...props}
     />
   );

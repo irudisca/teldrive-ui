@@ -196,6 +196,16 @@ export default memo(function PreviewModal({
           return u.toString();
         })();
 
+  const storyboardUrl: string | undefined =
+    shareId || !session?.hash
+      ? undefined
+      : (() => {
+          const u = new URL(window.location.origin);
+          u.pathname = `/api/files/${id}/storyboard`;
+          u.searchParams.set("hash", session.hash);
+          return u.toString();
+        })();
+
   const renderPreview = useCallback(() => {
     if (previewType) {
       switch (previewType) {
@@ -203,7 +213,7 @@ export default memo(function PreviewModal({
           return (
             <Suspense fallback={<Loader />}>
               <div className="w-full max-w-5xl overflow-hidden mx-auto">
-                <VideoPreview url={assetUrl} poster={posterUrl} />
+                <VideoPreview url={assetUrl} poster={posterUrl} storyboard={storyboardUrl} />
               </div>
             </Suspense>
           );
@@ -251,7 +261,7 @@ export default memo(function PreviewModal({
       }
     }
     return null;
-  }, [assetUrl, posterUrl, name, previewType]);
+  }, [assetUrl, posterUrl, storyboardUrl, name, previewType]);
 
   return (
     <Modal
