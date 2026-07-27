@@ -5,15 +5,17 @@ Artplayer.USE_RAF = true;
 
 interface PlayerProps {
   option: Option;
+  poster?: string;
   style: React.CSSProperties;
 }
 
 export const Player = forwardRef<Artplayer, PlayerProps>(
-  ({ option, ...rest }, ref) => {
+  ({ option, poster, ...rest }, ref) => {
     const artRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
       const art = new Artplayer({
         ...option,
+        ...(poster ? { poster } : {}),
         container: artRef.current!,
       });
       art.aspectRatio = "16:9";
@@ -28,7 +30,7 @@ export const Player = forwardRef<Artplayer, PlayerProps>(
           art.destroy(false);
         }
       };
-    }, [option]);
+    }, [option, poster]);
     return <div ref={artRef} {...rest} />;
   },
 );

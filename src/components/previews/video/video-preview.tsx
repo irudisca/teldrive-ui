@@ -1,13 +1,23 @@
-import { memo, useRef } from "react";
+import { memo, useMemo, useRef } from "react";
 import type Artplayer from "artplayer";
 import type { Option } from "artplayer";
 import { Player } from "./art-player";
+import { useSession } from "@/utils/query-options";
 
 interface VideoPlayerProps {
+  id: string;
   url: string;
 }
-const VideoPlayer = memo(({ url, ...props }: VideoPlayerProps) => {
+const VideoPlayer = memo(({ id, url, ...props }: VideoPlayerProps) => {
   const artInstance = useRef<Artplayer | null>(null);
+  const [session] = useSession();
+  const sessionHash = session?.hash!;
+  const posterUrl = useMemo(() => {
+    const u = new URL(window.location.origin);
+    u.pathname = `/api/files/${id}/thumbnail`;
+    u.searchParams.set("hash", sessionHash);
+    return u.toString();
+  }, [id, sessionHash]);
   const artOptions: Option = {
     container: "",
     url,
@@ -43,6 +53,7 @@ const VideoPlayer = memo(({ url, ...props }: VideoPlayerProps) => {
       style={{ aspectRatio: "16 /9" }}
       ref={artInstance}
       option={artOptions}
+      poster={posterUrl}
       {...props}
     />
   );

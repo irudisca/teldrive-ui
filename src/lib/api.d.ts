@@ -716,6 +716,11 @@ export interface components {
              * @description Last update time
              */
             readonly updatedAt?: string;
+            /**
+             * Format: date-time
+             * @description File import/creation time
+             */
+            readonly createdAt?: string;
         };
         /**
          * @description File Copy request

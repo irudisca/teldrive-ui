@@ -193,7 +193,7 @@ export default memo(function PreviewModal({
           return (
             <Suspense fallback={<Loader />}>
               <div className="w-full max-w-5xl overflow-hidden mx-auto">
-                <VideoPreview url={assetUrl} />
+                <VideoPreview id={id} url={assetUrl} />
               </div>
             </Suspense>
           );

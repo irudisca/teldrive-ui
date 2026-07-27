@@ -127,6 +127,7 @@ const mapFilesToFb = (files: components["schemas"]["FileList"]["items"], session
         mimeType: item.mimeType,
         size: item.size ? Number(item.size) : 0,
         modDate: item.updatedAt,
+        createdAt: item.createdAt,
         isDir: true,
       };
     }
@@ -145,6 +146,11 @@ const mapFilesToFb = (files: components["schemas"]["FileList"]["items"], session
           ? `${settings.resizerHost}/insecure/w:360/plain/${encodeURIComponent(url)}`
           : "";
       }
+    } else if (previewType === "video") {
+      const u = new URL(window.location.origin);
+      u.pathname = `/api/files/${item.id}/thumbnail`;
+      u.searchParams.set("hash", sessionHash);
+      thumbnailUrl = u.toString();
     }
     return {
       id: item.id!,
@@ -156,6 +162,7 @@ const mapFilesToFb = (files: components["schemas"]["FileList"]["items"], session
       openable: !!preview[previewType!],
       thumbnailUrl,
       modDate: item.updatedAt,
+      createdAt: item.createdAt,
       isEncrypted: item.encrypted,
     };
   });

@@ -19,7 +19,7 @@ import { CustomActions } from "@/hooks/use-file-action";
 import { CopyButton } from "@/components/copy-button";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import IcRoundClose from "~icons/ic/round-close";
-import { getNextDate } from "@/utils/common";
+import { filesize, getNextDate } from "@/utils/common";
 import ShowPasswordIcon from "~icons/mdi/eye-outline";
 import HidePasswordIcon from "~icons/mdi/eye-off-outline";
 import MdiProtectedOutline from "~icons/mdi/protected-outline";
@@ -398,6 +398,47 @@ const ShareFileDialog = memo(({ handleClose }: ShareFileDialogProps) => {
   );
 });
 
+interface InfoDialogProps {
+  handleClose: () => void;
+}
+
+const InfoDialog = memo(({ handleClose }: InfoDialogProps) => {
+  const { currentFile: file } = useModalStore(
+    useShallow((state) => ({
+      currentFile: state.currentFile,
+    })),
+  );
+
+  const rows: [string, string][] = [
+    ["Name", file.name],
+    ["Size", file.size != null ? filesize(file.size) : "—"],
+    ["Type", file.mimeType ?? file.type ?? "—"],
+    ["Modified", file.modDate ? new Date(file.modDate as string).toLocaleString() : "—"],
+    ["Imported", file.createdAt ? new Date(file.createdAt).toLocaleString() : "—"],
+  ];
+
+  return (
+    <>
+      <ModalHeader className="flex flex-col gap-1">Info</ModalHeader>
+      <ModalBody>
+        <div className="flex flex-col gap-2">
+          {rows.map(([label, value]) => (
+            <div key={label} className="flex justify-between gap-4 text-sm">
+              <span className="text-on-surface-variant shrink-0">{label}</span>
+              <span className="truncate text-right">{value}</span>
+            </div>
+          ))}
+        </div>
+      </ModalBody>
+      <ModalFooter>
+        <Button className="font-normal" variant="text" onPress={handleClose}>
+          Close
+        </Button>
+      </ModalFooter>
+    </>
+  );
+});
+
 export const FileOperationModal = memo(({ queryKey }: FileModalProps) => {
   const { open, operation, actions } = useModalStore(
     useShallow((state) => ({
@@ -425,6 +466,8 @@ export const FileOperationModal = memo(({ queryKey }: FileModalProps) => {
         return <DeleteDialog queryKey={queryKey} handleClose={handleClose} />;
       case CustomActions.ShareFiles.id:
         return <ShareFileDialog handleClose={handleClose} />;
+      case CustomActions.FileInfo.id:
+        return <InfoDialog handleClose={handleClose} />;
       default:
         return null;
     }
