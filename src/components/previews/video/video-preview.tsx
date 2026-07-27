@@ -4,11 +4,10 @@ import type { Option } from "artplayer";
 import { Player } from "./art-player";
 
 interface VideoPlayerProps {
-  id: string;
   url: string;
   poster?: string;
 }
-const VideoPlayer = memo(({ id, url, poster, ...props }: VideoPlayerProps) => {
+const VideoPlayer = memo(({ url, poster, ...props }: VideoPlayerProps) => {
   const artInstance = useRef<Artplayer | null>(null);
   const artOptions: Option = {
     container: "",

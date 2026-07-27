@@ -146,7 +146,7 @@ const mapFilesToFb = (files: components["schemas"]["FileList"]["items"], session
           ? `${settings.resizerHost}/insecure/w:360/plain/${encodeURIComponent(url)}`
           : "";
       }
-    } else if (previewType === "video") {
+    } else if (previewType === "video" && sessionHash) {
       const u = new URL(window.location.origin);
       u.pathname = `/api/files/${item.id!}/thumbnail`;
       u.searchParams.set("hash", sessionHash);
